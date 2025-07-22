@@ -57,7 +57,7 @@ Required installation to use any other copilot module.
     'application': True,
     'sequence': 1,
     'images': [
-        'static/description/banner.jpg',
+        'static/description/banner.gif',
         'static/description/copilot_core.jpg',
         # Emplacements pour les futures images de screenshots
          'static/description/screenshot_1.png',
