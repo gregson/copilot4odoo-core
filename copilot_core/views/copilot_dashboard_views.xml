@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Vue unifiée dashboard + configuration -->
+    <record id="view_copilot_dashboard" model="ir.ui.view">
+        <field name="name">copilot.dashboard</field>
+        <field name="model">copilot.config</field>
+        <field name="arch" type="xml">
+            <form string="Dashboard &amp; Configuration" create="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <i class="fa fa-robot"/> Copilot IA Dashboard
+                        </h1>
+                        <h2>Intelligence Artificielle pour Odoo</h2>
+                    </div>
+                    
+                    <!-- Section Configuration Essentielle -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5><i class="fa fa-cog"/> Configuration IA</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="user_token" class="font-weight-bold">
+                                                    <i class="fa fa-key"/> Token Client IA
+                                                </label>
+                                                <field name="user_token" widget="char" 
+                                                       placeholder="Saisissez votre token client IA" 
+                                                       class="form-control" required="1" 
+                                                       readonly="0" force_save="1"/>
+                                                <small class="text-muted">Votre clé d'accès personnelle aux services IA</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="selected_model" class="font-weight-bold">
+                                                    <i class="fa fa-brain"/> Modèle IA
+                                                </label>
+                                                <field name="selected_model" class="form-control"/>
+                                                <small class="text-muted">Modèle d'intelligence artificielle utilisé</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 text-center">
+                                            <button name="test_connection" string="Test Connection" 
+                                                    type="object" class="btn btn-success mr-2"/>
+                                            <button name="sync_quota" string="Sync Quota" 
+                                                    type="object" class="btn btn-primary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistiques principales -->
+                    <div class="row mt-3">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4><field name="tokens_remaining"/></h4>
+                                            <p class="mb-0">Tokens Restants</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-coins fa-2x" title="Tokens"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4><field name="selected_model"/></h4>
+                                            <p class="mb-0">Modèle IA Actif</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-brain fa-2x" title="Modèle IA"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4><field name="status"/></h4>
+                                            <p class="mb-0">Statut Service</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-heartbeat fa-2x" title="Statut"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4><field name="expiry_date"/></h4>
+                                            <p class="mb-0">Expiration</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-calendar fa-2x" title="Expiration"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions rapides -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-bolt"/> Actions Rapides</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <button name="test_connection" string="Test Connection" type="object" class="btn btn-primary btn-block"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button name="sync_quota" string="Sync Quota" type="object" class="btn btn-secondary btn-block"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button name="open_buy_credits" string="Buy Credits" type="object" class="btn btn-success btn-block"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button name="open_copilot_store" string="Module Store" type="object" class="btn btn-info btn-block"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Modules disponibles -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-puzzle-piece"/> Modules Copilot Disponibles</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-3 mb-3">
+                                            <div class="card border-primary">
+                                                <div class="card-body text-center">
+                                                    <img src="/copilot_core/static/description/copilot_crm.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="CRM"/>
+                                                    <h6 class="card-title">Copilot CRM</h6>
+                                                    <p class="card-text small">Assistant pour ventes, leads et devis automatiques</p>
+                                                    <span class="badge badge-success">399€</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-3 mb-3">
+                                            <div class="card border-info">
+                                                <div class="card-body text-center">
+                                                    <img src="/copilot_core/static/description/copilot_hr.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="RH"/>
+                                                    <h6 class="card-title">Copilot RH</h6>
+                                                    <p class="card-text small">Gestion employés, congés et contrats intelligents</p>
+                                                    <span class="badge badge-success">399€</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-3 mb-3">
+                                            <div class="card border-warning">
+                                                <div class="card-body text-center">
+                                                    <img src="/copilot_core/static/description/copilot_stock.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="Stock"/>
+                                                    <h6 class="card-title">Copilot Stock</h6>
+                                                    <p class="card-text small">Inventaire et approvisionnement prédictif</p>
+                                                    <span class="badge badge-success">399€</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-3 mb-3">
+                                            <div class="card border-success">
+                                                <div class="card-body text-center">
+                                                    <img src="/copilot_core/static/description/copilot_compta.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="Comptabilité"/>
+                                                    <h6 class="card-title">Copilot Compta</h6>
+                                                    <p class="card-text small">Factures et analyse financière automatisée</p>
+                                                    <span class="badge badge-success">399€</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <button name="open_copilot_store" string="View All Modules" type="object" class="btn btn-primary btn-lg"/>
+                                        <div class="mt-3">
+                                            <img src="/copilot_core/static/description/copilot_bundle.jpg" class="img-fluid" style="max-height: 100px; border-radius: 5px;" title="Pack Complet"/>
+                                            <p class="text-muted mt-2">
+                                                <strong>Pack Complet :</strong> Tous les modules à 999€ (au lieu de 1596€)
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistiques d'usage détaillées -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-chart-line"/> Statistiques d'Usage IA</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="progress mb-3" style="height: 25px;">
+                                                <div class="progress-bar bg-success" role="progressbar" 
+                                                     style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                                    <strong><field name="tokens_used"/> / <field name="tokens_total"/> tokens utilisés (<field name="usage_percentage" widget="float" digits="[16,1]"/>%)</strong>
+                                                </div>
+                                            </div>
+                                            <div class="row text-center">
+                                                <div class="col-md-4">
+                                                    <div class="border-right">
+                                                        <h4 class="text-success"><field name="tokens_remaining"/></h4>
+                                                        <small class="text-muted">Tokens Restants</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="border-right">
+                                                        <h4 class="text-primary"><field name="tokens_used"/></h4>
+                                                        <small class="text-muted">Tokens Utilisés</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h4 class="text-info"><field name="tokens_total"/></h4>
+                                                    <small class="text-muted">Quota Total</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-center">
+                                                <h6><i class="fa fa-calendar"/> Dernière Synchronisation</h6>
+                                                <p class="text-muted"><field name="last_sync"/></p>
+                                                <small class="text-info"><i class="fa fa-info-circle"/> Utilisez l'onglet Configuration pour synchroniser</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Historique d'usage récent -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-history"/> Activité IA Récente</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><i class="fa fa-brain"/> Modèle IA Actuel</h6>
+                                            <div class="alert alert-info">
+                                                <strong><field name="selected_model"/></strong>
+                                                <br/><small>Modèle sélectionné pour les requêtes IA</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="fa fa-server"/> Statut du Service</h6>
+                                            <div class="alert alert-success" invisible="status != 'active'">
+                                                <i class="fa fa-check-circle"/> <strong>Service Actif</strong>
+                                                <br/><small>Toutes les fonctionnalités IA sont opérationnelles</small>
+                                            </div>
+                                            <div class="alert alert-warning" invisible="status != 'quota_exceeded'">
+                                                <i class="fa fa-exclamation-triangle"/> <strong>Quota Dépassé</strong>
+                                                <br/><small>Rechargez vos crédits pour continuer</small>
+                                            </div>
+                                            <div class="alert alert-danger" invisible="status in ['active', 'quota_exceeded']">
+                                                <i class="fa fa-times-circle"/> <strong>Service Indisponible</strong>
+                                                <br/><small>Vérifiez votre configuration</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h6><i class="fa fa-info-circle"/> Informations Système</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-borderless">
+                                                    <tr>
+                                                        <td><strong>Version Copilot Core:</strong></td>
+                                                        <td><span class="badge badge-primary">v1.0.19</span></td>
+                                                        <td><strong>Endpoint API:</strong></td>
+                                                        <td><field name="api_endpoint"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Modules Installés:</strong></td>
+                                                        <td colspan="3">
+                                                            <field name="installed_modules_html" widget="html" nolabel="1"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action serveur pour le dashboard -->
+    <record id="action_copilot_dashboard_server" model="ir.actions.server">
+        <field name="name">Dashboard Copilot IA</field>
+        <field name="model_id" ref="model_copilot_config"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_dashboard()</field>
+    </record>
+    
+    <!-- Action fenêtre pour le dashboard (remplace l'ancienne) -->
+    <record id="action_copilot_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard Copilot IA</field>
+        <field name="res_model">copilot.config</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_copilot_dashboard"/>
+        <field name="target">current</field>
+        <field name="context">{'form_view_initial_mode': 'readonly'}</field>
+    </record>
+
+</odoo>

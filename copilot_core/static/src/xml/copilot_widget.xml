@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    
+    <!-- Template principal du widget Copilot dans le systray -->
+    <t t-name="copilot_core.CopilotWidget" owl="1">
+        <div class="o_systray_dropdown copilot-widget-dropdown">
+            <!-- Bouton du widget dans la barre de navigation -->
+            <button class="o_systray_dropdown_toggle copilot-widget-button" 
+                    t-on-click="toggleVisibility"
+                    title="Copilot IA - Assistant Intelligent">
+                <div class="copilot-icon-container">
+                    <img src="/copilot_core/static/description/copilot.png" alt="Copilot IA" style="width: 50px; height: 50px; margin-top: 8px;"/>
+                </div>
+            </button>
+            
+            <!-- Menu dropdown du widget -->
+            <div t-if="state.isVisible" class="dropdown-menu dropdown-menu-right show">
+                <!-- En-tête du widget -->
+                <div class="copilot-widget-header">
+                    <img src="/copilot_core/static/description/copilot.png" alt="Copilot IA" style="width: 50px; height: 50px; margin-right: 8px; margin-top: 8px;"/>
+                    <h6 class="copilot-widget-title">Copilot IA 1.0.21</h6>
+                </div>
+                
+                <!-- Informations de quota si config disponible -->
+                <div t-if="state.config" class="copilot-quota-info">
+                    <div class="copilot-quota-label">
+                        Crédits IA: <t t-esc="formatTokens(state.config.tokens_remaining)"/> / <t t-esc="formatTokens(state.config.tokens_total)"/>
+                    </div>
+                    <div class="copilot-quota-bar">
+                        <div class="copilot-quota-fill" 
+                             t-attf-style="width: {{state.quotaPercentage}}%"></div>
+                        <div class="copilot-quota-text">
+                            <t t-esc="Math.round(state.quotaPercentage)"/>%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message si pas de configuration -->
+                <div t-if="!state.config" class="alert alert-warning mb-3">
+                    <small>Configuration Copilot non trouvée</small>
+                </div>
+                
+                <!-- Actions du widget -->
+                <div class="copilot-widget-actions">
+                    <button class="copilot-widget-action" 
+                            t-on-click="openDashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i>
+                        Dashboard
+                    </button>
+                    
+                    <button t-if="state.config" 
+                            class="copilot-widget-action" 
+                            t-on-click="testConnection"
+                            
+                            t-att-disabled="state.isLoading">
+                        <i class="fa fa-plug" aria-hidden="true"></i>
+                        <span t-if="!state.isLoading">Tester Connexion</span>
+                        <span t-if="state.isLoading">Test en cours...</span>
+                    </button>
+                    
+                    <button t-if="state.config" 
+                            class="copilot-widget-action" 
+                            t-on-click="syncQuota"
+                            t-att-disabled="state.isLoading">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        <span t-if="!state.isLoading">Synchroniser</span>
+                        <span t-if="state.isLoading">Sync en cours...</span>
+                    </button>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <button t-if="state.config" 
+                            class="copilot-widget-action" 
+                            t-on-click="buyCredits">
+                        <i class="fa fa-credit-card" aria-hidden="true"></i>
+                        Acheter Crédits
+                    </button>
+                    
+                    <button t-if="state.config" 
+                            class="copilot-widget-action" 
+                            t-on-click="openStore">
+                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                        Store Modules
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+</templates>

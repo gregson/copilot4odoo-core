@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Vue formulaire de configuration -->
+    <record id="view_copilot_config_form" model="ir.ui.view">
+        <field name="name">copilot.config.form</field>
+        <field name="model">copilot.config</field>
+        <field name="arch" type="xml">
+            <form string="AI Copilot Configuration">
+                <header>
+                    <button name="test_connection" string="Test Connection" type="object" class="btn-primary"/>
+                    <button name="sync_quota" string="Synchronize Quota" type="object" class="btn-secondary"/>
+                    <button name="open_buy_credits" string="Buy Credits" type="object" class="btn-success"/>
+                    <field name="status" widget="statusbar" statusbar_visible="active,expired,quota_exceeded,invalid_token"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="open_copilot_store" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Store</span>
+                                <span class="o_stat_value">Modules</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="user_token" placeholder="Your AI client token..." on_change="1" force_save="1" widget="char" password="True"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="ai_settings" string="AI Settings">
+                            <field name="selected_model" widget="selection"/>
+                            <field name="api_endpoint" on_change="1" on_save="1"/>
+                            <field name="is_active"/>
+                        </group>
+                        
+                        <group name="quota_info" string="Quota &amp; Usage">
+                            <field name="tokens_total" readonly="1"/>
+                            <field name="tokens_used" readonly="1"/>
+                            <field name="tokens_remaining" readonly="1" decoration-danger="tokens_remaining &lt; 1000" decoration-warning="tokens_remaining &lt; 10000"/>
+                            <field name="expiry_date" readonly="1"/>
+                            <field name="last_sync" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Installed Modules" name="modules">
+                            <div class="alert alert-info">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong>Installed Copilot Modules:</strong>
+                                    <button name="check_installed_copilots" string="Refresh Modules" type="object" class="btn btn-sm btn-secondary"/>
+                                </div>
+                            </div>
+                            <field name="installed_modules_html" widget="html" readonly="1"/>
+                            <div class="alert alert-info" role="alert">
+                                <strong>Available Copilot Modules:</strong>
+                                <ul>
+                                    <li><strong>Copilot CRM</strong> - Assistant for sales, leads and quotes</li>
+                                    <li><strong>Copilot HR</strong> - Employee, leave and contract management</li>
+                                    <li><strong>Copilot Inventory</strong> - Intelligent inventory and procurement</li>
+                                    <li><strong>Copilot Accounting</strong> - Invoices and financial analysis</li>
+                                </ul>
+                                <button name="open_copilot_store" string="Discover Modules" type="object" class="btn btn-primary"/>
+                            </div>
+                        </page>
+                        
+                        <page string="History" name="usage">
+                            <field name="id" invisible="1"/>
+                            <!-- Here we will display usage statistics -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Usage This Month</h5>
+                                            <p class="card-text">Detailed statistics available in complete history.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue liste de configuration -->
+    <record id="view_copilot_config_list" model="ir.ui.view">
+        <field name="name">copilot.config.list</field>
+        <field name="model">copilot.config</field>
+        <field name="arch" type="xml">
+            <list string="Copilot Configurations">
+                <field name="user_token"/>
+                <field name="selected_model"/>
+                <field name="tokens_remaining" decoration-danger="tokens_remaining &lt; 1000"/>
+                <field name="status" decoration-success="status == 'active'" decoration-danger="status in ('expired', 'invalid_token')"/>
+                <field name="last_sync"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Action pour la configuration -->
+    <record id="action_copilot_config" model="ir.actions.act_window">
+        <field name="name">Configuration IA</field>
+        <field name="res_model">copilot.config</field>
+        <field name="view_mode">form,list</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configurez votre Copilot IA !
+            </p>
+            <p>
+                Saisissez votre token client pour commencer à utiliser l'intelligence artificielle dans Odoo.
+                Choisissez votre modèle IA préféré et gérez vos quotas de tokens.
+            </p>
+        </field>
+    </record>
+    
+    <!-- Vue formulaire pour l'historique d'usage -->
+    <record id="view_copilot_usage_form" model="ir.ui.view">
+        <field name="name">copilot.usage.form</field>
+        <field name="model">copilot.usage</field>
+        <field name="arch" type="xml">
+            <form string="AI Request Details" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group name="request_info" string="Request Information">
+                            <field name="module_name"/>
+                            <field name="model_used"/>
+                            <field name="tokens_used"/>
+                            <field name="response_time"/>
+                            <field name="status"/>
+                            <field name="user_id"/>
+                            <field name="create_date"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Prompt" name="prompt">
+                            <field name="prompt" widget="text"/>
+                        </page>
+                        <page string="AI Response" name="response">
+                            <field name="response" widget="text"/>
+                        </page>
+                        <page string="Error" name="error" invisible="status != 'error'">
+                            <field name="error_message" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue liste pour l'historique d'usage -->
+    <record id="view_copilot_usage_list" model="ir.ui.view">
+        <field name="name">copilot.usage.list</field>
+        <field name="model">copilot.usage</field>
+        <field name="arch" type="xml">
+            <list string="AI History" create="false" edit="false">
+                <field name="create_date"/>
+                <field name="module_name"/>
+                <field name="model_used"/>
+                <field name="tokens_used"/>
+                <field name="status" decoration-success="status == 'success'" decoration-danger="status == 'error'"/>
+                <field name="user_id"/>
+                <field name="response_time"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Action pour l'historique -->
+    <record id="action_copilot_usage" model="ir.actions.act_window">
+        <field name="name">Historique IA</field>
+        <field name="res_model">copilot.usage</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun historique d'usage IA pour le moment
+            </p>
+            <p>
+                L'historique apparaîtra ici dès que vous utiliserez les fonctions IA des modules Copilot.
+            </p>
+        </field>
+    </record>
+
+</odoo>

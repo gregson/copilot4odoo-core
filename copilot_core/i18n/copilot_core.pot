@@ -1,0 +1,276 @@
+# Translation template for copilot_core
+# Copyright (C) 2025 Copilot4Odoo
+# This file is distributed under the same license as the copilot_core package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: copilot_core 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-20 05:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: copilot_core
+#: model:ir.model,name:copilot_core.model_copilot_config
+msgid "AI Copilot Configuration"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__ai_client_token
+msgid "AI Client Token"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,help:copilot_core.field_copilot_config__ai_client_token
+msgid "AI client token for API authentication"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__available_models
+msgid "Available AI Models"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__available_modules
+msgid "Available Modules"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__id
+msgid "ID"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__is_active
+msgid "Is Active"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__last_sync_date
+msgid "Last Sync Date"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__selected_model
+msgid "Selected AI Model"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__tokens_remaining
+msgid "Tokens Remaining"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__tokens_total
+msgid "Total Tokens"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__tokens_used
+msgid "Tokens Used"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__usage_percentage
+msgid "Usage Percentage"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__user_token
+msgid "User Token"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__write_date
+msgid "Last Modified on"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,field_description:copilot_core.field_copilot_config__write_uid
+msgid "Last Modified by"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model,name:copilot_core.model_copilot_models
+msgid "AI Models"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model,name:copilot_core.model_copilot_usage
+msgid "AI Usage History"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.actions.act_window,name:copilot_core.action_copilot_dashboard
+msgid "Dashboard Copilot IA"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.actions.server,name:copilot_core.action_copilot_dashboard_server
+msgid "Dashboard Copilot IA"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.ui.menu,name:copilot_core.menu_copilot_main
+msgid "Copilot IA"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.ui.menu,name:copilot_core.menu_copilot_dashboard
+msgid "Dashboard & Configuration"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.ui.menu,name:copilot_core.menu_copilot_buy_credits
+msgid "💳 Acheter Crédits"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.actions.act_url,name:copilot_core.action_copilot_buy_credits_external
+msgid "Acheter Crédits IA"
+msgstr ""
+
+#. module: copilot_core
+#: code:addons/copilot_core/models/copilot_config.py:0
+#, python-format
+msgid "Connection successful! API is responding correctly."
+msgstr ""
+
+#. module: copilot_core
+#: code:addons/copilot_core/models/copilot_config.py:0
+#, python-format
+msgid "Connection failed: %s"
+msgstr ""
+
+#. module: copilot_core
+#: code:addons/copilot_core/models/copilot_config.py:0
+#, python-format
+msgid "Quota synchronized successfully! Total: %s tokens, Used: %s tokens, Remaining: %s tokens"
+msgstr ""
+
+#. module: copilot_core
+#: code:addons/copilot_core/models/copilot_config.py:0
+#, python-format
+msgid "Failed to synchronize quota: %s"
+msgstr ""
+
+#. module: copilot_core
+#: model:ir.model.fields,default:copilot_core.field_copilot_config__available_modules
+msgid "Loading available modules..."
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Dashboard & Configuration"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Test Connection"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Sync Quota"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Buy Credits"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Module Store"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "View All Modules"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_form
+msgid "AI Settings"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_form
+msgid "Quota & Usage"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_form
+msgid "Installed Modules"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_form
+msgid "Refresh Modules"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_form
+msgid "Discover Modules"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_form
+msgid "History"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_config_list
+msgid "Copilot Configurations"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.usage:copilot_core.view_copilot_usage_form
+msgid "AI Request Details"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.usage:copilot_core.view_copilot_usage_form
+msgid "Request Information"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.usage:copilot_core.view_copilot_usage_form
+msgid "Prompt"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.usage:copilot_core.view_copilot_usage_form
+msgid "AI Response"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.usage:copilot_core.view_copilot_usage_form
+msgid "Error"
+msgstr ""
+
+#. module: copilot_core
+#: view:copilot.usage:copilot_core.view_copilot_usage_list
+msgid "AI History"
+msgstr ""

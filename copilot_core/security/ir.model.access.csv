@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_copilot_config_user,copilot.config.user,model_copilot_config,base.group_user,1,1,1,0
+access_copilot_config_manager,copilot.config.manager,model_copilot_config,base.group_system,1,1,1,1
+access_copilot_usage_user,copilot.usage.user,model_copilot_usage,base.group_user,1,0,0,0
+access_copilot_usage_manager,copilot.usage.manager,model_copilot_usage,base.group_system,1,1,1,1
+access_copilot_models_user,copilot.models.user,model_copilot_models,base.group_user,1,0,0,0
+access_copilot_models_manager,copilot.models.manager,model_copilot_models,base.group_system,1,1,1,1

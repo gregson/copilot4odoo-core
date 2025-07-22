@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Main Copilot AI Menu -->
+    <menuitem id="menu_copilot_main" 
+              name="AI Copilot" 
+              sequence="5" 
+              web_icon="copilot_core,static/description/icon.png"/>
+    
+    <!-- Dashboard & Configuration Unifié -->
+    <menuitem id="menu_copilot_dashboard" 
+              name="Dashboard &amp; Configuration" 
+              parent="menu_copilot_main" 
+              action="action_copilot_dashboard_server" 
+              sequence="1"/>
+    
+    <!-- History Submenu -->
+    <menuitem id="menu_copilot_usage" 
+              name="AI History" 
+              parent="menu_copilot_main" 
+              action="action_copilot_usage" 
+              sequence="20"/>
+    
+    <!-- Séparateur -->
+    <menuitem id="menu_copilot_separator" 
+              name="─────────────────" 
+              parent="menu_copilot_main" 
+              sequence="50"/>
+    
+    <!-- Liens externes -->
+    <record id="action_copilot_store_external" model="ir.actions.act_url">
+        <field name="name">Store Modules</field>
+        <field name="url">https://copilot4odoo.com/modules</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="menu_copilot_store" 
+              name="🛒 Store Modules" 
+              parent="menu_copilot_main" 
+              action="action_copilot_store_external" 
+              sequence="60"/>
+    
+    <record id="action_copilot_buy_credits_external" model="ir.actions.act_url">
+        <field name="name">Acheter Crédits IA</field>
+        <field name="url">https://www.copilot4odoo.com/pricing#token-packs</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="menu_copilot_buy_credits" 
+              name="💳 Acheter Crédits" 
+              parent="menu_copilot_main" 
+              action="action_copilot_buy_credits_external" 
+              sequence="70"/>
+    
+    <!-- Menu d'aide -->
+    <record id="action_copilot_help_external" model="ir.actions.act_url">
+        <field name="name">Documentation</field>
+        <field name="url">https://copilot4odoo.com/docs</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="menu_copilot_help" 
+              name="📚 Documentation" 
+              parent="menu_copilot_main" 
+              action="action_copilot_help_external" 
+              sequence="80"/>
+
+</odoo>

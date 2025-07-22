@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Modèles OpenAI -->
+        <record id="model_gpt_4_turbo" model="copilot.models">
+            <field name="name">gpt-4-turbo</field>
+            <field name="display_name">GPT-4 Turbo</field>
+            <field name="provider">openai</field>
+            <field name="description">Modèle le plus avancé d'OpenAI, excellent pour les tâches complexes</field>
+            <field name="context_length">128000</field>
+            <field name="cost_per_1k_input">0.01</field>
+            <field name="cost_per_1k_output">0.03</field>
+            <field name="supports_function_calling">True</field>
+            <field name="supports_vision">True</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="is_recommended">True</field>
+            <field name="sequence">1</field>
+        </record>
+        
+        <record id="model_gpt_3_5_turbo" model="copilot.models">
+            <field name="name">gpt-3.5-turbo</field>
+            <field name="display_name">GPT-3.5 Turbo</field>
+            <field name="provider">openai</field>
+            <field name="description">Modèle rapide et économique, parfait pour la plupart des tâches</field>
+            <field name="context_length">16385</field>
+            <field name="cost_per_1k_input">0.0015</field>
+            <field name="cost_per_1k_output">0.002</field>
+            <field name="supports_function_calling">True</field>
+            <field name="supports_vision">False</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">2</field>
+        </record>
+        
+        <!-- Modèles Anthropic -->
+        <record id="model_claude_3_opus" model="copilot.models">
+            <field name="name">claude-3-opus</field>
+            <field name="display_name">Claude 3 Opus</field>
+            <field name="provider">anthropic</field>
+            <field name="description">Modèle le plus puissant d'Anthropic, excellent pour l'analyse et le raisonnement</field>
+            <field name="context_length">200000</field>
+            <field name="cost_per_1k_input">0.015</field>
+            <field name="cost_per_1k_output">0.075</field>
+            <field name="supports_function_calling">True</field>
+            <field name="supports_vision">True</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">3</field>
+        </record>
+        
+        <record id="model_claude_3_sonnet" model="copilot.models">
+            <field name="name">claude-3-sonnet</field>
+            <field name="display_name">Claude 3 Sonnet</field>
+            <field name="provider">anthropic</field>
+            <field name="description">Équilibre parfait entre performance et coût</field>
+            <field name="context_length">200000</field>
+            <field name="cost_per_1k_input">0.003</field>
+            <field name="cost_per_1k_output">0.015</field>
+            <field name="supports_function_calling">True</field>
+            <field name="supports_vision">True</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">4</field>
+        </record>
+        
+        <!-- Modèles Mistral -->
+        <record id="model_mixtral_8x7b" model="copilot.models">
+            <field name="name">mixtral-8x7b</field>
+            <field name="display_name">Mixtral 8x7B</field>
+            <field name="provider">mistral</field>
+            <field name="description">Modèle open-source performant, excellent rapport qualité/prix</field>
+            <field name="context_length">32768</field>
+            <field name="cost_per_1k_input">0.0007</field>
+            <field name="cost_per_1k_output">0.0007</field>
+            <field name="supports_function_calling">True</field>
+            <field name="supports_vision">False</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">5</field>
+        </record>
+        
+        <record id="model_mistral_7b" model="copilot.models">
+            <field name="name">mistral-7b</field>
+            <field name="display_name">Mistral 7B</field>
+            <field name="provider">mistral</field>
+            <field name="description">Modèle compact et efficace pour les tâches simples</field>
+            <field name="context_length">32768</field>
+            <field name="cost_per_1k_input">0.0002</field>
+            <field name="cost_per_1k_output">0.0002</field>
+            <field name="supports_function_calling">False</field>
+            <field name="supports_vision">False</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">6</field>
+        </record>
+        
+        <!-- Modèles Cohere -->
+        <record id="model_command_r" model="copilot.models">
+            <field name="name">command-r</field>
+            <field name="display_name">Command R</field>
+            <field name="provider">cohere</field>
+            <field name="description">Modèle optimisé pour les conversations et le RAG</field>
+            <field name="context_length">128000</field>
+            <field name="cost_per_1k_input">0.0005</field>
+            <field name="cost_per_1k_output">0.0015</field>
+            <field name="supports_function_calling">True</field>
+            <field name="supports_vision">False</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">7</field>
+        </record>
+        
+        <!-- Modèles Open Source -->
+        <record id="model_nous_capybara" model="copilot.models">
+            <field name="name">nous-capybara</field>
+            <field name="display_name">Nous Capybara</field>
+            <field name="provider">opensource</field>
+            <field name="description">Modèle open-source gratuit pour les tests et démos</field>
+            <field name="context_length">8192</field>
+            <field name="cost_per_1k_input">0.0</field>
+            <field name="cost_per_1k_output">0.0</field>
+            <field name="supports_function_calling">False</field>
+            <field name="supports_vision">False</field>
+            <field name="supports_code">True</field>
+            <field name="is_active">True</field>
+            <field name="sequence">8</field>
+        </record>
+        
+    </data>
+</odoo>
