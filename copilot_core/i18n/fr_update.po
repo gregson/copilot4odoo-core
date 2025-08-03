@@ -1,0 +1,157 @@
+# French translation update for copilot_core
+# Copyright (C) 2025 Copilot4Odoo
+# This file is distributed under the same license as the copilot_core package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: copilot_core 18.0.1.0.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-03 07:26+0000\n"
+"PO-Revision-Date: 2025-08-03 07:26+0000\n"
+"Last-Translator: Copilot4Odoo Team\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "AI Statistics"
+msgstr "Statistiques IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Remaining Tokens"
+msgstr "Tokens Restants"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "used"
+msgstr "utilisés"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "total"
+msgstr "total"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "AI Model"
+msgstr "Modèle IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Change Model"
+msgstr "Changer de Modèle"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Status"
+msgstr "Statut"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Last sync:"
+msgstr "Dernière sync :"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Quick Actions"
+msgstr "Actions Rapides"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Sync Tokens"
+msgstr "Synchroniser Tokens"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Buy Tokens"
+msgstr "Acheter des Tokens"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Discover Modules"
+msgstr "Découvrir les Modules"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "API Token"
+msgstr "Token API"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Enter your AI client token"
+msgstr "Saisissez votre token client IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Test"
+msgstr "Tester"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Your personal access key to AI services"
+msgstr "Votre clé d'accès personnelle aux services IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "API server address for AI services"
+msgstr "Adresse du serveur API pour les services IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "AI model used for generating responses"
+msgstr "Modèle IA utilisé pour générer les réponses"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Language"
+msgstr "Langue"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Default language for AI responses"
+msgstr "Langue par défaut pour les réponses IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Available Modules"
+msgstr "Modules Disponibles"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Installed Modules"
+msgstr "Modules Installés"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Sales assistant, leads and automatic quotes"
+msgstr "Assistant de vente, leads et devis automatiques"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Ticket automation and customer responses"
+msgstr "Automatisation des tickets et réponses clients"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "HR management and AI-assisted recruitment"
+msgstr "Gestion RH et recrutement assisté par IA"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Marketing campaign automation"
+msgstr "Automatisation des campagnes marketing"
+
+#. module: copilot_core
+#: view:copilot.config:copilot_core.view_copilot_dashboard
+msgid "Learn More"
+msgstr "En savoir plus"

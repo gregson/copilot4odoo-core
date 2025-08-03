@@ -41,7 +41,7 @@
                             <field name="tokens_total" readonly="1"/>
                             <field name="tokens_used" readonly="1"/>
                             <field name="tokens_remaining" readonly="1" decoration-danger="tokens_remaining &lt; 1000" decoration-warning="tokens_remaining &lt; 10000"/>
-                            <field name="expiry_date" readonly="1"/>
+ 
                             <field name="last_sync" readonly="1"/>
                         </group>
                     </group>

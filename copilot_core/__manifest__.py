@@ -1,6 +1,6 @@
 {
     'name': 'Copilot AI Core',
-    'version': '18.0.1.0.3',
+    'version': '18.0.1.1.1',
     'category': 'Productivity',
     'summary': 'Central AI engine for Odoo copilots - AI tokens and models management',
     'description': """
@@ -49,6 +49,7 @@ Required installation to use any other copilot module.
         'web.assets_backend': [
             'copilot_core/static/src/js/copilot_widget.js',
             'copilot_core/static/src/css/copilot_style.css',
+            'copilot_core/static/src/css/copilot_widget.css',
             'copilot_core/static/src/xml/copilot_widget.xml',
         ],
     },

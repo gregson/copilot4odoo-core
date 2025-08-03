@@ -37,6 +37,10 @@ class CopilotConfig(models.Model):
         ('nous-capybara', 'Nous Capybara (Open Source)'),
     ], string=_('AI Model'), default='gpt-3.5-turbo', required=True)
     
+    # Note: Language is now managed by Odoo's native language system
+    
+    # Dashboard display fields
+    
     # Quota management
     tokens_total = fields.Integer(string=_('Total Tokens'), default=0, readonly=True)
     tokens_used = fields.Integer(string=_('Used Tokens'), default=0, readonly=True)
@@ -53,8 +57,7 @@ class CopilotConfig(models.Model):
         store=False,
         help=_('Percentage of tokens used')
     )
-    
-    expiry_date = fields.Datetime(string=_('Expiry Date'), readonly=True)
+ 
     last_sync = fields.Datetime(string=_('Last Synchronization'), readonly=True)
     
     # Advanced parameters
@@ -104,6 +107,100 @@ class CopilotConfig(models.Model):
     def _compute_tokens_remaining(self):
         for record in self:
             record.tokens_remaining = record.tokens_total - record.tokens_used
+            
+    def _get_real_token_balance(self):
+        """Calcule le solde réel de tokens basé sur les achats et l'utilisation
+        
+        Returns:
+            tuple: (total_tokens_purchased, total_tokens_used)
+        """
+        self.ensure_one()
+        
+        # Somme des tokens utilisés depuis les logs d'utilisation
+        used_tokens = sum(self.env['copilot.usage'].search([
+            ('config_id', '=', self.id)
+        ]).mapped('tokens_used'))
+        
+        # Pour les tokens achetés, on utilise la valeur stockée dans tokens_total
+        # car nous n'avons plus de modèle d'achat local
+        return self.tokens_total, used_tokens
+        
+    def sync_token_balance(self):
+        """Synchronise le solde de tokens en utilisant l'utilisation réelle"""
+        self.ensure_one()
+        _, used_tokens = self._get_real_token_balance()
+        
+        self.write({
+            'tokens_used': used_tokens,
+            'last_sync': fields.Datetime.now(),
+        })
+        
+        return {
+            'tokens_total': self.tokens_total,
+            'tokens_used': used_tokens,
+            'tokens_remaining': self.tokens_total - used_tokens
+        }
+        
+    def sync_quota(self):
+        """Synchronise le quota de tokens depuis l'API et met à jour le solde local"""
+        self.ensure_one()
+        
+        if not self.user_token:
+            raise UserError(_('Veuillez saisir un token client valide.'))
+        
+        try:
+            # Logs détaillés pour l'appel API
+            _logger.info('='*50)
+            _logger.info(f'DÉBUT APPEL API /api/account/info (sync_quota)')
+            
+            headers = {
+                'Authorization': f'Bearer {self.user_token}',
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Connection': 'keep-alive',
+                'User-Agent': 'Odoo/Copilot4Odoo-Client'
+            }
+            
+            response = requests.get(
+                f'{self.api_endpoint}/account/info',
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Récupération des achats depuis l'API
+                purchases_data = data.get('purchases', [])
+                
+                # Calcul du total des tokens achetés (uniquement les achats complétés)
+                total_purchased = 0
+                if purchases_data:
+                    _logger.info(f'Calcul du total des tokens achetés depuis {len(purchases_data)} achats')
+                    for purchase in purchases_data:
+                        if purchase.get('status') == 'completed':
+                            total_purchased += purchase.get('tokens_purchased', 0)
+                
+                # Mise à jour du total des tokens achetés
+                self.write({
+                    'tokens_total': total_purchased
+                })
+                
+                # Calcul du solde réel de tokens basé sur les achats et l'utilisation
+                token_balance = self.sync_token_balance()
+                
+                _logger.info(f'Synchronisation réussie - Tokens total: {token_balance["tokens_total"]}, utilisés: {token_balance["tokens_used"]}')
+                _logger.info('FIN APPEL API /api/account/info (sync_quota)')
+                _logger.info('='*50)
+                
+                return token_balance
+            else:
+                self.status = 'invalid_token'
+                raise UserError(_('Token invalide ou expiré. Code: %s') % response.status_code)
+                
+        except requests.exceptions.RequestException as e:
+            _logger.error(f'Erreur de connexion API: {str(e)}')
+            raise UserError(_('Erreur de connexion API: %s') % str(e))
             
     @api.onchange('user_token', 'api_endpoint')
     def _onchange_credentials(self):
@@ -182,8 +279,6 @@ class CopilotConfig(models.Model):
         if not self.user_token:
             raise UserError(_('Veuillez saisir un token client valide.'))
         
-        # Pas de write() ici pour éviter le refresh de la vue qui fait disparaître l'affichage
-        
         try:
             # Logs détaillés pour l'appel API
             _logger.info('='*50)
@@ -222,15 +317,34 @@ class CopilotConfig(models.Model):
                 data = response.json()
                 _logger.info(f'Données JSON parsées: {data}')
                 
-                self.write({
-                    'tokens_total': data.get('tokens_total', 0),
-                    'tokens_used': data.get('tokens_used', 0),
-                    'expiry_date': data.get('expiry_date'),
-                    'status': 'active',
-                    'last_sync': fields.Datetime.now(),
-                })
+                # Récupération des achats depuis l'API
+                purchases_data = data.get('purchases', [])
                 
-                _logger.info(f'Mise à jour réussie - Tokens total: {data.get("tokens_total", 0)}, utilisés: {data.get("tokens_used", 0)}')
+                # Mise à jour ou création des achats dans le modèle local
+                if purchases_data:
+                    _logger.info(f'Synchronisation de {len(purchases_data)} achats depuis l\'API')
+                    
+                    # Suppression des anciens achats pour éviter les doublons
+                    self.env['copilot.purchase'].search([('config_id', '=', self.id)]).unlink()
+                    
+                    # Création des nouveaux achats
+                    for purchase in purchases_data:
+                        if purchase.get('status') == 'completed':
+                            self.env['copilot.purchase'].create({
+                                'config_id': self.id,
+                                'tokens_purchased': purchase.get('tokens_purchased', 0),
+                                'amount_eur': purchase.get('amount_eur', 0.0),
+                                'payment_reference': purchase.get('stripe_payment_intent_id', ''),
+                                'status': 'completed',
+                                'created_at': fields.Datetime.from_string(purchase.get('created_at')) if purchase.get('created_at') else fields.Datetime.now(),
+                                'completed_at': fields.Datetime.from_string(purchase.get('completed_at')) if purchase.get('completed_at') else fields.Datetime.now(),
+                                'user_id': self.env.user.id,
+                            })
+                
+                # Calcul du solde réel de tokens basé sur les achats et l'utilisation
+                token_balance = self.sync_token_balance()
+                
+                _logger.info(f'Mise à jour réussie - Tokens total: {token_balance["tokens_total"]}, utilisés: {token_balance["tokens_used"]}')
                 _logger.info('FIN APPEL API /api/account/info')
                 _logger.info('='*50)
                 
@@ -313,7 +427,7 @@ class CopilotConfig(models.Model):
                 self.write({
                     'tokens_total': data.get('tokens_total', 0),
                     'tokens_used': data.get('tokens_used', 0),
-                    'expiry_date': data.get('expiry_date'),
+ 
                     'status': 'active',
                     'last_sync': fields.Datetime.now(),
                 })
@@ -596,7 +710,7 @@ class CopilotConfig(models.Model):
         """Ouvre la page d'achat de crédits IA"""
         return {
             'type': 'ir.actions.act_url',
-            'url': f'https://www.copilot4odoo.com/buy-credits?token={self.user_token}',
+            'url': f'https://www.copilot4odoo.com/pricing#token-packs',
             'target': 'new',
         }
     
@@ -733,12 +847,53 @@ class CopilotConfig(models.Model):
         """Vérifie quels modules Copilot sont installés et met à jour le champ installed_modules"""
         self.ensure_one()
         
-        # Récupération de la liste des modules disponibles depuis l'API
         try:
             import requests
             import json
             import logging
             _logger = logging.getLogger(__name__)
+            
+            # Récupération des modules Odoo installés avec préfixe 'copilot_'
+            installed_modules_obj = self.env['ir.module.module'].search([
+                ('name', 'like', 'copilot_%'),
+                ('state', '=', 'installed')
+            ])
+            
+            _logger.info(f"Modules Copilot trouvés dans la base: {len(installed_modules_obj)}")
+            for mod in installed_modules_obj:
+                _logger.info(f"Module trouvé: {mod.name} - {mod.shortdesc} - {mod.state}")
+            
+            # Formatage de l'affichage des modules installés (texte)
+            if installed_modules_obj:
+                installed_text = _("Modules Copilot installés:") + "\n\n"
+                
+                for module in installed_modules_obj:
+                    installed_text += f"• {module.shortdesc} (v{module.latest_version})\n"
+            else:
+                installed_text = _('Aucun module Copilot installé.') + "\n\n" + \
+                                _('Cliquez sur \'Découvrir les Modules\' pour explorer les modules disponibles.')
+            
+            # Formatage de l'affichage des modules installés (HTML)
+            if installed_modules_obj:
+                installed_html = "<div class='alert alert-success'>\n"
+                installed_html += f"<h4>{_('Modules Copilot installés')}</h4>\n"
+                installed_html += "<ul class='list-group'>\n"
+                
+                for module in installed_modules_obj:
+                    installed_html += f"<li class='list-group-item'><strong>{module.shortdesc}</strong> - {_('Version')} {module.latest_version}</li>\n"
+                
+                installed_html += "</ul>\n</div>"
+            else:
+                installed_html = "<div class='alert alert-warning'>\n"
+                installed_html += f"<p>{_('Aucun module Copilot installé.')}</p>\n"
+                installed_html += f"<p>{_('Cliquez sur \'Découvrir les Modules\' pour explorer les modules disponibles.')}</p>\n"
+                installed_html += "</div>"
+            
+            # Mise à jour des champs des modules installés
+            self.write({
+                'installed_modules': installed_text,
+                'installed_modules_html': installed_html
+            })
             
             # Récupération de l'endpoint API configuré ou utilisation d'une valeur par défaut
             endpoint = self.api_endpoint or "https://www.copilot4odoo.com"
@@ -746,55 +901,156 @@ class CopilotConfig(models.Model):
             
             _logger.info(f"Récupération des modules disponibles depuis {url}")
             
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                copilot_modules = [module['name'] for module in data.get('modules', [])]
-                _logger.info(f"Modules disponibles récupérés: {len(copilot_modules)}")
-            else:
-                _logger.warning(f"Erreur lors de la récupération des modules: {response.status_code}")
-                # Fallback sur une liste minimale en cas d'erreur
-                copilot_modules = [
-                    'copilot_core'
-                ]
+            # Tentative de récupération des modules disponibles depuis l'API
+            try:
+                response = requests.get(url, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    available_modules = data.get('modules', [])
+                    _logger.info(f"Modules disponibles récupérés: {len(available_modules)}")
+                    
+                    # Filtrage pour ne pas afficher copilot_core dans les modules disponibles
+                    available_modules = [m for m in available_modules if m.get('name') != 'copilot_core']
+                    
+                    # Formatage de l'affichage des modules disponibles
+                    if available_modules:
+                        available_text = _('Modules Copilot disponibles:') + "\n\n"
+                        
+                        for module in available_modules:
+                            available_text += f"• {module.get('display_name')} - {module.get('description')}\n"
+                    else:
+                        available_text = _('Aucun module Copilot disponible actuellement.')
+                    
+                    # Si le champ available_modules existe, le mettre à jour
+                    if hasattr(self, 'available_modules'):
+                        self.write({
+                            'available_modules': available_text
+                        })
+                else:
+                    _logger.warning(f"Erreur lors de la récupération des modules: {response.status_code}")
+            except Exception as e:
+                _logger.error(f"Exception lors de la récupération des modules disponibles: {str(e)}")
+                # Ne pas bloquer le processus si la récupération des modules disponibles échoue
+            
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+            }
+            
         except Exception as e:
-            _logger.error(f"Exception lors de la récupération des modules: {str(e)}")
-            # Fallback sur une liste minimale en cas d'erreur
-            copilot_modules = [
-                'copilot_core'
-            ]
+            _logger.error(f"Exception lors de la récupération des modules installés: {str(e)}")
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Erreur'),
+                    'message': f"{_('Exception lors de la récupération des modules:')} {str(e)}",
+                    'type': 'danger',
+                    'sticky': False,
+                }
+            }
         
-        # Vérification des modules installés
-        installed_modules = []
-        module_obj = self.env['ir.module.module']
-        
-        for module_name in copilot_modules:
-            module = module_obj.search([('name', '=', module_name)], limit=1)
-            if module and module.state == 'installed':
-                installed_modules.append(module_name)
-        
-        # Format de l'affichage
-        if installed_modules:
-            modules_info = "\n".join([f"- {module}" for module in installed_modules])
-            modules_count = len(installed_modules)
-            modules_text = f"Modules Copilot installés ({modules_count}):\n{modules_info}"
-        else:
-            modules_text = "Aucun module Copilot supplémentaire installé."
-        
-        # Mise à jour du champ
-        self.write({'installed_modules': modules_text})
-        
-        return True
-    
     def get_module_version(self):
-        """Récupère la version du module copilot_core installé"""
-        module = self.env['ir.module.module'].search([('name', '=', 'copilot_core'), ('state', '=', 'installed')], limit=1)
-        return module.latest_version if module else 'Version non disponible'
-    
+        """Récupère la version du module copilot_core"""
+        try:
+            module = self.env['ir.module.module'].search([('name', '=', 'copilot_core')], limit=1)
+            if module:
+                return module.installed_version
+            else:
+                # Fallback sur la version du manifest
+                return "18.0.1.0.4"
+        except Exception as e:
+            _logger.error(f"Erreur lors de la récupération de la version du module: {e}")
+            return "18.0.1.0.4"
+            
+    def set_language(self, lang_code=None):
+        """Change la langue de l'interface utilisateur
+        
+        Args:
+            lang_code: Code de langue Odoo (ex: 'en_US', 'fr_FR')
+        """
+        self.ensure_one()
+        if lang_code:
+            # Récupérer l'utilisateur actuel
+            user = self.env.user
+            # Mettre à jour la langue de l'utilisateur avec le code fourni
+            user.write({'lang': lang_code})
+            # Recharger le contexte
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+            }
+        return True
+            
     @api.model
     def action_open_dashboard(self):
         """Ouvre le dashboard avec l'enregistrement de configuration existant"""
         config = self.get_config()
+        
+        # Récupération de la version du module pour l'affichage dans le dashboard
+        module_version = config.get_module_version()
+        
+        # Mise à jour du champ module_version dans la configuration
+        config.write({
+            'module_version': module_version
+        })
+        
+        # Génération du HTML des modules installés
+        try:
+            # Recherche des modules installés avec préfixe 'copilot_'
+            Module = self.env['ir.module.module']
+            installed_modules = Module.search([('name', 'like', 'copilot_'), ('state', '=', 'installed')])
+            
+            # Force l'inclusion du module core s'il n'est pas détecté
+            if not any(module.name == 'copilot_core' for module in installed_modules):
+                core_module = Module.search([('name', '=', 'copilot_core'), ('state', '=', 'installed')], limit=1)
+                if core_module:
+                    installed_modules += core_module
+                    
+            # Vérification supplémentaire pour copilot_crm
+            if not any(module.name == 'copilot_crm' for module in installed_modules):
+                crm_module = Module.search([('name', '=', 'copilot_crm'), ('state', '=', 'installed')], limit=1)
+                if crm_module:
+                    installed_modules += crm_module
+            
+            # Préparation du HTML pour l'affichage des modules installés
+            if installed_modules:
+                installed_html = '<div class="row">'
+                for module in installed_modules:
+                    # Récupération des informations du module
+                    name = module.shortdesc or module.name
+                    version = module.installed_version or ''
+                    author = module.author or ''
+                    
+                    # Création d'une carte pour chaque module
+                    installed_html += f'''
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card h-100 border-info hover-shadow">
+                            <div class="card-body">
+                                <h6 class="card-title">{name}</h6>
+                                <p class="card-text small mb-1"><strong>Version:</strong> {version}</p>
+                                <p class="card-text small"><strong>Author:</strong> {author}</p>
+                                <span class="badge badge-info">Installed</span>
+                            </div>
+                        </div>
+                    </div>
+                    '''
+                installed_html += '</div>'
+            else:
+                # Ajout d'un message par défaut avec Copilot Core
+                installed_html = '<div class="row"><div class="col-md-6 col-lg-4 mb-3"><div class="card h-100 border-info hover-shadow"><div class="card-body"><h6 class="card-title">Copilot Core</h6><p class="card-text small mb-1"><strong>Version:</strong> ' + module_version + '</p><p class="card-text small"><strong>Author:</strong> Copilot4Odoo</p><span class="badge badge-info">Installed</span></div></div></div></div>'
+            
+            # Mise à jour du champ HTML dans la configuration
+            config.write({
+                'installed_modules_html': installed_html
+            })
+        except Exception as e:
+            _logger.error(f"Exception lors de la génération du HTML des modules installés: {str(e)}")
+            # En cas d'erreur, on met un message d'erreur dans le champ HTML
+            config.write({
+                'installed_modules_html': f'<div class="alert alert-danger">Error loading modules: {str(e)}</div>'
+            })
+        
         return {
             'type': 'ir.actions.act_window',
             'name': _('Dashboard Copilot IA'),
@@ -803,7 +1059,7 @@ class CopilotConfig(models.Model):
             'view_mode': 'form',
             'view_id': self.env.ref('copilot_core.view_copilot_dashboard').id,
             'target': 'current',
-            'context': {'form_view_initial_mode': 'readonly'},
+            'context': {'module_version': module_version},
         }
     
     def send_telemetry(self):

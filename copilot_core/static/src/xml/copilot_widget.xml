@@ -18,20 +18,25 @@
                 <!-- En-tête du widget -->
                 <div class="copilot-widget-header">
                     <img src="/copilot_core/static/description/copilot.png" alt="Copilot IA" style="width: 50px; height: 50px; margin-right: 8px; margin-top: 8px;"/>
-                    <h6 class="copilot-widget-title">Copilot IA 1.0.21</h6>
+                    <h6 class="copilot-widget-title">Copilot IA 18.0.1.0.4</h6>
                 </div>
                 
                 <!-- Informations de quota si config disponible -->
                 <div t-if="state.config" class="copilot-quota-info">
                     <div class="copilot-quota-label">
-                        Crédits IA: <t t-esc="formatTokens(state.config.tokens_remaining)"/> / <t t-esc="formatTokens(state.config.tokens_total)"/>
+                        <span>Crédits IA: <t t-esc="formatTokens(state.config.tokens_remaining)"/> / <t t-esc="formatTokens(state.config.tokens_total)"/></span>
+                        <span class="small text-muted ml-2">(Utilisés: <t t-esc="formatTokens(state.config.tokens_used)"/>)</span>
                     </div>
                     <div class="copilot-quota-bar">
                         <div class="copilot-quota-fill" 
-                             t-attf-style="width: {{state.quotaPercentage}}%"></div>
+                             t-attf-style="width: {{state.quotaPercentage}}%; background-color: var(--{{state.statusColor}});"></div>
                         <div class="copilot-quota-text">
-                            <t t-esc="Math.round(state.quotaPercentage)"/>%
+                            <t t-esc="Math.round(state.quotaPercentage)"/>% utilisés
                         </div>
+                    </div>
+                    <div class="copilot-quota-details small text-muted">
+                        <div>Total acheté: <t t-esc="formatTokens(state.config.tokens_total)"/> tokens</div>
+                        <div>Total utilisé: <t t-esc="formatTokens(state.config.tokens_used)"/> tokens</div>
                     </div>
                 </div>
                 

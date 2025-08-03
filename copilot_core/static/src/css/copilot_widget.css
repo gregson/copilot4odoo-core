@@ -1,0 +1,114 @@
+/* Styles pour le widget Copilot */
+
+.copilot-widget-dropdown {
+    width: 300px;
+}
+
+.copilot-widget-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.copilot-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copilot-widget-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background-color: #f8f9fa;
+}
+
+.copilot-widget-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.copilot-quota-info {
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.copilot-quota-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.copilot-quota-bar {
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.copilot-quota-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+}
+
+.copilot-quota-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.copilot-quota-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.copilot-widget-actions {
+    padding: 10px;
+}
+
+.copilot-widget-action {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 15px;
+    margin-bottom: 5px;
+    border: none;
+    background-color: transparent;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.copilot-widget-action:hover {
+    background-color: #f8f9fa;
+}
+
+.copilot-widget-action i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    margin: 8px 0;
+}

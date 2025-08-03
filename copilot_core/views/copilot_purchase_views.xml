@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue formulaire pour les achats de tokens -->
+    <record id="view_copilot_purchase_form" model="ir.ui.view">
+        <field name="name">copilot.purchase.form</field>
+        <field name="model">copilot.purchase</field>
+        <field name="arch" type="xml">
+            <form string="Achat de tokens">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="tokens_purchased"/>
+                            <field name="amount_eur" widget="monetary"/>
+                            <field name="status"/>
+                        </group>
+                        <group>
+                            <field name="payment_reference"/>
+                            <field name="created_at"/>
+                            <field name="completed_at"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="config_id"/>
+                        <field name="user_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour les achats de tokens -->
+    <record id="view_copilot_purchase_tree" model="ir.ui.view">
+        <field name="name">copilot.purchase.tree</field>
+        <field name="model">copilot.purchase</field>
+        <field name="arch" type="xml">
+            <tree string="Achats de tokens" decoration-success="status == 'completed'" decoration-info="status == 'pending'" decoration-danger="status in ('cancelled', 'refunded')">
+                <field name="created_at"/>
+                <field name="tokens_purchased" sum="Total"/>
+                <field name="amount_eur" sum="Total" widget="monetary"/>
+                <field name="status"/>
+                <field name="payment_reference"/>
+                <field name="completed_at"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue recherche pour les achats de tokens -->
+    <record id="view_copilot_purchase_search" model="ir.ui.view">
+        <field name="name">copilot.purchase.search</field>
+        <field name="model">copilot.purchase</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des achats">
+                <field name="display_name"/>
+                <field name="payment_reference"/>
+                <field name="user_id"/>
+                <filter string="Complétés" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="En attente" name="pending" domain="[('status', '=', 'pending')]"/>
+                <filter string="Annulés" name="cancelled" domain="[('status', '=', 'cancelled')]"/>
+                <filter string="Remboursés" name="refunded" domain="[('status', '=', 'refunded')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Statut" name="group_by_status" context="{'group_by': 'status'}"/>
+                    <filter string="Utilisateur" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Date de création" name="group_by_date" context="{'group_by': 'created_at:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour les achats de tokens -->
+    <record id="action_copilot_purchase" model="ir.actions.act_window">
+        <field name="name">Achats de tokens</field>
+        <field name="res_model">copilot.purchase</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_completed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun achat de tokens enregistré
+            </p>
+            <p>
+                Les achats de tokens sont synchronisés depuis la plateforme web Copilot4Odoo.
+                Utilisez le bouton "Synchroniser le quota" pour mettre à jour les données.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu pour les achats de tokens -->
+    <menuitem id="menu_copilot_purchase"
+              name="Achats de tokens"
+              parent="menu_copilot_config"
+              action="action_copilot_purchase"
+              sequence="20"/>
+</odoo>

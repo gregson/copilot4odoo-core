@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ce fichier est chargé avant le fichier de sécurité pour s'assurer que le modèle copilot.purchase est bien enregistré -->
+    <record id="model_copilot_purchase_init" model="ir.model">
+        <field name="name">copilot.purchase</field>
+        <field name="model">copilot.purchase</field>
+        <field name="modules" eval="['copilot_core']"/>
+    </record>
+</odoo>

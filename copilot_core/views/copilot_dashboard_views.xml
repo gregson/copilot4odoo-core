@@ -6,214 +6,276 @@
         <field name="name">copilot.dashboard</field>
         <field name="model">copilot.config</field>
         <field name="arch" type="xml">
-            <form string="Dashboard &amp; Configuration" create="false">
+            <form string="AI Copilot Dashboard &amp; Configuration" create="false">
+                <style>
+                    .hover-shadow:hover {
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                        transform: translateY(-3px);
+                        transition: all 0.3s ease;
+                    }
+                    .bg-purple {
+                        background-color: #6f42c1;
+                    }
+                    .text-purple {
+                        color: #6f42c1;
+                    }
+                    .card {
+                        transition: all 0.3s ease;
+                    }
+                    .progress {
+                        height: 8px;
+                        border-radius: 4px;
+                        overflow: hidden;
+                    }
+                    .progress-bar {
+                        transition: width 1s ease;
+                    }
+                    .card-header h5 {
+                        margin-bottom: 0;
+                    }
+                </style>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <i class="fa fa-robot"/> Copilot IA Dashboard
+                            <i class="fa fa-robot"/> AI Copilot Dashboard
                         </h1>
-                        <h2>Intelligence Artificielle pour Odoo</h2>
                     </div>
                     
-                    <!-- Section Configuration Essentielle -->
+                    <!-- Section Statistiques et Actions principales -->
                     <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="card border-primary">
+                        <!-- Colonne de gauche: Statistiques -->
+                        <div class="col-md-8">
+                            <div class="card">
                                 <div class="card-header bg-primary text-white">
-                                    <h5><i class="fa fa-cog"/> Configuration IA</h5>
+                                    <h5><i class="fa fa-chart-bar"/> AI Statistics</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="row m-0">
+                                        <div class="col-md-4 p-3 border-right">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h3 class="mb-0 text-primary"><field name="tokens_remaining"/></h3>
+                                                    <p class="text-muted mb-0">Remaining Tokens</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fa fa-coins fa-2x text-primary" title="Tokens"/>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2">
+                                                <field name="usage_percentage" widget="progressbar" options="{'editable': false, 'max_value': 100}"/>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-1">
+                                                <small class="text-muted"><field name="tokens_used"/> used</small>
+                                                <small class="text-muted"><field name="tokens_total"/> total</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 p-3 border-right">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h3 class="mb-0 text-success"><field name="selected_model"/></h3>
+                                                    <p class="text-muted mb-0">AI Model</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fa fa-brain fa-2x text-success" title="AI Model"/>
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-2">
+                                                <button name="get_available_models" string="Change Model" type="object" class="btn btn-sm btn-outline-success" icon="fa-exchange"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 p-3">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h3 class="mb-0 text-info"><field name="status"/></h3>
+                                                    <p class="text-muted mb-0">Status</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fa fa-heartbeat fa-2x text-info" title="Status"/>
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-2">
+                                                <small class="text-muted">Last sync: <field name="last_sync"/></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Colonne de droite: Actions principales -->
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-success text-white">
+                                    <h5><i class="fa fa-bolt"/> Quick Actions</h5>
+                                </div>
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <button name="sync_quota" string="Sync Tokens" type="object" class="btn btn-primary btn-lg mb-2"  >
+                                        <i class="fa fa-refresh mr-2"/>Sync Tokens
+                                    </button>
+                                    <button name="open_buy_credits" string="Buy Tokens" type="object" class="btn btn-success btn-lg mb-2"  >
+                                        <i class="fa fa-credit-card mr-2"/>Buy Tokens
+                                    </button>
+                                    <button name="open_copilot_store" string="Discover Modules" type="object" class="btn btn-info btn-lg"  >
+                                        <i class="fa fa-puzzle-piece mr-2"/>Discover Modules
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Configuration -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5><i class="fa fa-cog"/> Configuration</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="user_token" class="font-weight-bold">
-                                                    <i class="fa fa-key"/> Token Client IA
+                                                    <i class="fa fa-key"/> API Token
                                                 </label>
-                                                <field name="user_token" widget="char" 
-                                                       placeholder="Saisissez votre token client IA" 
-                                                       class="form-control" required="1" 
-                                                       readonly="0" force_save="1"/>
-                                                <small class="text-muted">Votre clé d'accès personnelle aux services IA</small>
+                                                <div class="input-group">
+                                                    <field name="user_token" widget="char" 
+                                                           placeholder="Enter your AI client token" 
+                                                           class="form-control" required="1" 
+                                                           readonly="0" password="True" force_save="1"/>
+                                                    <div class="input-group-append">
+                                                        <button name="test_connection" string="Test" 
+                                                                type="object" class="btn btn-outline-primary"/>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">Your personal access key to AI services</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="api_endpoint" class="font-weight-bold">
+                                                    <i class="fa fa-link"/> API Endpoint
+                                                </label>
+                                                <field name="api_endpoint" class="form-control" placeholder="https://api.example.com/v1"/>
+                                                <small class="text-muted">API server address for AI services</small>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="selected_model" class="font-weight-bold">
-                                                    <i class="fa fa-brain"/> Modèle IA
+                                                    <i class="fa fa-brain"/> AI Model
                                                 </label>
                                                 <field name="selected_model" class="form-control"/>
-                                                <small class="text-muted">Modèle d'intelligence artificielle utilisé</small>
+                                                <small class="text-muted">AI model used for generating responses</small>
+                                            </div>
+                                            <!-- Language selection temporairement désactivé -->
+                                            <div class="form-group">
+                                                <div class="font-weight-bold mb-2">
+                                                    <i class="fa fa-language"/> Language
+                                                </div>
+                                                <div class="alert alert-info">
+                                                    <small>Language selection will be available after database update</small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12 text-center">
-                                            <button name="test_connection" string="Test Connection" 
-                                                    type="object" class="btn btn-success mr-2"/>
-                                            <button name="sync_quota" string="Sync Quota" 
-                                                    type="object" class="btn btn-primary"/>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Statistiques principales -->
-                    <div class="row mt-3">
-                        <div class="col-lg-3 col-md-6">
-                            <div class="card bg-primary text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4><field name="tokens_remaining"/></h4>
-                                            <p class="mb-0">Tokens Restants</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-coins fa-2x" title="Tokens"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-3 col-md-6">
-                            <div class="card bg-success text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4><field name="selected_model"/></h4>
-                                            <p class="mb-0">Modèle IA Actif</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-brain fa-2x" title="Modèle IA"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-3 col-md-6">
-                            <div class="card bg-info text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4><field name="status"/></h4>
-                                            <p class="mb-0">Statut Service</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-heartbeat fa-2x" title="Statut"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-3 col-md-6">
-                            <div class="card bg-warning text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4><field name="expiry_date"/></h4>
-                                            <p class="mb-0">Expiration</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-calendar fa-2x" title="Expiration"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Actions rapides -->
+                    <!-- Available Modules -->
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fa fa-bolt"/> Actions Rapides</h5>
+                                <div class="card-header bg-purple text-white">
+                                    <h5><i class="fa fa-puzzle-piece"/> Available Modules</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <button name="test_connection" string="Test Connection" type="object" class="btn btn-primary btn-block"/>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button name="sync_quota" string="Sync Quota" type="object" class="btn btn-secondary btn-block"/>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button name="open_buy_credits" string="Buy Credits" type="object" class="btn btn-success btn-block"/>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button name="open_copilot_store" string="Module Store" type="object" class="btn btn-info btn-block"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Modules disponibles -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fa fa-puzzle-piece"/> Modules Copilot Disponibles</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6 col-lg-3 mb-3">
-                                            <div class="card border-primary">
-                                                <div class="card-body text-center">
-                                                    <img src="/copilot_core/static/description/copilot_crm.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="CRM"/>
-                                                    <h6 class="card-title">Copilot CRM</h6>
-                                                    <p class="card-text small">Assistant pour ventes, leads et devis automatiques</p>
-                                                    <span class="badge badge-success">399€</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-6 col-lg-3 mb-3">
-                                            <div class="card border-info">
-                                                <div class="card-body text-center">
-                                                    <img src="/copilot_core/static/description/copilot_hr.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="RH"/>
-                                                    <h6 class="card-title">Copilot RH</h6>
-                                                    <p class="card-text small">Gestion employés, congés et contrats intelligents</p>
-                                                    <span class="badge badge-success">399€</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-6 col-lg-3 mb-3">
-                                            <div class="card border-warning">
-                                                <div class="card-body text-center">
-                                                    <img src="/copilot_core/static/description/copilot_stock.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="Stock"/>
-                                                    <h6 class="card-title">Copilot Stock</h6>
-                                                    <p class="card-text small">Inventaire et approvisionnement prédictif</p>
-                                                    <span class="badge badge-success">399€</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-6 col-lg-3 mb-3">
-                                            <div class="card border-success">
-                                                <div class="card-body text-center">
-                                                    <img src="/copilot_core/static/description/copilot_compta.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="Comptabilité"/>
-                                                    <h6 class="card-title">Copilot Compta</h6>
-                                                    <p class="card-text small">Factures et analyse financière automatisée</p>
-                                                    <span class="badge badge-success">399€</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <!-- Installed modules section -->
+                                    <div class="mb-4">
+                                        <h6 class="text-primary mb-3"><i class="fa fa-check-circle"/> Installed Modules</h6>
+                                        <field name="installed_modules_html" widget="html" nolabel="1"/>
                                     </div>
                                     
-                                    <div class="text-center mt-3">
-                                        <button name="open_copilot_store" string="View All Modules" type="object" class="btn btn-primary btn-lg"/>
-                                        <div class="mt-3">
-                                            <img src="/copilot_core/static/description/copilot_bundle.jpg" class="img-fluid" style="max-height: 100px; border-radius: 5px;" title="Pack Complet"/>
-                                            <p class="text-muted mt-2">
-                                                <strong>Pack Complet :</strong> Tous les modules à 999€ (au lieu de 1596€)
-                                            </p>
+                                    <!-- Available modules section -->
+                                    <div class="mb-4">
+                                        <h6 class="text-primary mb-3"><i class="fa fa-puzzle-piece"/> Available Modules</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-3 mb-3">
+                                                <div class="card h-100 border-primary hover-shadow">
+                                                    <div class="card-body text-center">
+                                                        <img src="/copilot_core/static/description/copilot_crm.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="CRM"/>
+                                                        <h6 class="card-title">🎯 Copilot CRM</h6>
+                                                        <p class="card-text small">AI Sales Assistant</p>
+                                                        <ul class="list-unstyled small text-left">
+                                                            <li><i class="fa fa-check text-success"></i> Intelligent prospect analysis</li>
+                                                            <li><i class="fa fa-check text-success"></i> AI conversion scoring</li>
+                                                            <li><i class="fa fa-check text-success"></i> AI quote generation</li>
+                                                        </ul>
+                                                        <span class="badge badge-success">399€</span>
+                                                    </div>
+                                                    <div class="card-footer bg-transparent border-0 text-center">
+                                                        <a href="https://www.copilot4odoo.com/shop/copilot-crm-15" target="_blank" class="btn btn-sm btn-outline-primary">Learn More</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6 col-lg-3 mb-3">
+                                                <div class="card h-100 border-primary hover-shadow">
+                                                    <div class="card-body text-center">
+                                                        <img src="/copilot_core/static/description/copilot_hr.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="HR"/>
+                                                        <h6 class="card-title">👥 Copilot HR</h6>
+                                                        <p class="card-text small">AI Human Resources Assistant</p>
+                                                        <ul class="list-unstyled small text-left">
+                                                            <li><i class="fa fa-check text-success"></i> Automatic employee profiles</li>
+                                                            <li><i class="fa fa-check text-success"></i> Turnover risk prediction</li>
+                                                            <li><i class="fa fa-check text-success"></i> Talent detection</li>
+                                                        </ul>
+                                                        <span class="badge badge-success">399€</span>
+                                                    </div>
+                                                    <div class="card-footer bg-transparent border-0 text-center">
+                                                        <a href="https://www.copilot4odoo.com/shop/copilot-hr-18" target="_blank" class="btn btn-sm btn-outline-primary">Learn More</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6 col-lg-3 mb-3">
+                                                <div class="card h-100 border-primary hover-shadow">
+                                                    <div class="card-body text-center">
+                                                        <img src="/copilot_core/static/description/copilot_stock.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="Inventory"/>
+                                                        <h6 class="card-title">📦 Copilot Inventory</h6>
+                                                        <p class="card-text small">AI Inventory Assistant</p>
+                                                        <ul class="list-unstyled small text-left">
+                                                            <li><i class="fa fa-check text-success"></i> Stock-out predictions</li>
+                                                            <li><i class="fa fa-check text-success"></i> Inventory optimization</li>
+                                                            <li><i class="fa fa-check text-success"></i> Demand trend analysis</li>
+                                                        </ul>
+                                                        <span class="badge badge-success">399€</span>
+                                                    </div>
+                                                    <div class="card-footer bg-transparent border-0 text-center">
+                                                        <a href="https://www.copilot4odoo.com/shop/copilot-inventory" target="_blank" class="btn btn-sm btn-outline-primary">Learn More</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6 col-lg-3 mb-3">
+                                                <div class="card h-100 border-primary hover-shadow">
+                                                    <div class="card-body text-center">
+                                                        <img src="/copilot_core/static/description/copilot_compta.jpg" class="img-fluid mb-2" style="max-height: 80px; border-radius: 5px;" title="Accounting"/>
+                                                        <h6 class="card-title">💰 Copilot Accounting</h6>
+                                                        <p class="card-text small">AI Accounting Assistant</p>
+                                                        <ul class="list-unstyled small text-left">
+                                                            <li><i class="fa fa-check text-success"></i> Anomaly detection</li>
+                                                            <li><i class="fa fa-check text-success"></i> Financial predictions</li>
+                                                            <li><i class="fa fa-check text-success"></i> Automated reconciliation</li>
+                                                        </ul>
+                                                        <span class="badge badge-success">399€</span>
+                                                    </div>
+                                                    <div class="card-footer bg-transparent border-0 text-center">
+                                                        <a href="https://www.copilot4odoo.com/shop/copilot-accounting" target="_blank" class="btn btn-sm btn-outline-primary">Learn More</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -309,12 +371,12 @@
                                                 <table class="table table-sm table-borderless">
                                                     <tr>
                                                         <td><strong>Version Copilot Core:</strong></td>
-                                                        <td><span class="badge badge-primary">v1.0.19</span></td>
+                                                        <td><span class="badge badge-primary">18.0.1.1.0</span></td>
                                                         <td><strong>Endpoint API:</strong></td>
                                                         <td><field name="api_endpoint"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <td><strong>Modules Installés:</strong></td>
+                                                        <td><strong>Installed Modules:</strong></td>
                                                         <td colspan="3">
                                                             <field name="installed_modules_html" widget="html" nolabel="1"/>
                                                         </td>

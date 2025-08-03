@@ -74,18 +74,29 @@ class CopilotWidget extends Component {
     updateQuotaDisplay() {
         if (!this.state.config) return;
         
-        const { tokens_total, tokens_used } = this.state.config;
+        const { tokens_total, tokens_used, tokens_remaining } = this.state.config;
+        
         if (tokens_total > 0) {
-            this.state.quotaPercentage = (tokens_used / tokens_total) * 100;
+            // Calcul du pourcentage basé sur les tokens restants par rapport au total
+            this.state.quotaPercentage = Math.min(100, Math.max(0, (tokens_used / tokens_total) * 100));
+            
+            // Calcul du pourcentage d'utilisation pour déterminer la couleur
+            const usagePercentage = 100 - (tokens_remaining / tokens_total * 100);
             
             // Couleur selon le pourcentage utilisé
-            if (this.state.quotaPercentage < 50) {
+            if (usagePercentage < 50) {
                 this.state.statusColor = 'success';
-            } else if (this.state.quotaPercentage < 80) {
+            } else if (usagePercentage < 80) {
                 this.state.statusColor = 'warning';
             } else {
                 this.state.statusColor = 'danger';
             }
+            
+            console.log(`Quota mis à jour: ${tokens_remaining}/${tokens_total} tokens restants (${this.state.quotaPercentage.toFixed(1)}% utilisés)`); 
+        } else {
+            console.log('Aucun token disponible');
+            this.state.quotaPercentage = 100;
+            this.state.statusColor = 'danger';
         }
     }
     
@@ -173,18 +184,29 @@ class CopilotWidget extends Component {
     }
     
     /**
-     * Ouvre le dashboard Copilot
+     * Ouvre le dashboard et la configuration Copilot
      */
-    openDashboard() {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            name: 'Dashboard Copilot IA',
-            res_model: 'copilot.config',
-            view_mode: 'form',
-            views: [[false, 'form']],
-            target: 'current',
-            context: { 'form_view_initial_mode': 'readonly' }
-        });
+    async openDashboard() {
+        if (!this.state.config) {
+            await this.loadConfig();
+        }
+        
+        if (this.state.config && this.state.config.id) {
+            // Redirection directe vers l'URL de la configuration avec l'action correcte
+            const url = `/web#id=${this.state.config.id}&model=copilot.config&view_type=form&action=copilot_core.action_copilot_dashboard`;
+            window.location.href = url;
+        } else {
+            // Fallback si pas de config trouvée
+            this.action.doAction({
+                type: 'ir.actions.act_window',
+                name: 'AI Copilot Dashboard & Configuration',
+                res_model: 'copilot.config',
+                view_mode: 'form',
+                views: [[false, 'form']],
+                target: 'current',
+                context: { 'form_view_initial_mode': 'edit' }
+            });
+        }
     }
     
     /**
