@@ -1,6 +1,6 @@
 {
     'name': 'Copilot AI Core',
-    'version': '18.0.1.1.1',
+    'version': '18.0.1.1.3',
     'category': 'Productivity',
     'summary': 'Central AI engine for Odoo copilots - AI tokens and models management',
     'description': """

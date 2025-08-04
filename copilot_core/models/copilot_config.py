@@ -99,6 +99,13 @@ class CopilotConfig(models.Model):
         default=_('Loading available modules...')
     )
     
+    # Champ pour stocker la version du module (nécessaire pour le dashboard Odoo 18)
+    module_version = fields.Char(
+        string=_('Module Version'),
+        help=_('Version of the Copilot Core module'),
+        readonly=True
+    )
+    
     # Méthode temporairement supprimée pour permettre l'upgrade
     def _compute_available_modules_html_disabled(self):
         pass
@@ -425,8 +432,8 @@ class CopilotConfig(models.Model):
                 
                 # Mise à jour des données (comme dans ask_ai)
                 self.write({
-                    'tokens_total': data.get('tokens_total', 0),
-                    'tokens_used': data.get('tokens_used', 0),
+                    'tokens_total': int(data.get('tokens_total', 0)),
+                    'tokens_used': int(data.get('tokens_used', 0)),
  
                     'status': 'active',
                     'last_sync': fields.Datetime.now(),
@@ -435,7 +442,7 @@ class CopilotConfig(models.Model):
                 _logger.info(f'Mise à jour réussie:')
                 _logger.info(f'- Tokens total: {old_tokens_total} -> {data.get("tokens_total", 0)}')
                 _logger.info(f'- Tokens utilisés: {old_tokens_used} -> {data.get("tokens_used", 0)}')
-                _logger.info(f'- Tokens restants: {data.get("tokens_total", 0) - data.get("tokens_used", 0)}')
+                _logger.info(f'- Tokens restants: {int(data.get("tokens_total", 0)) - int(data.get("tokens_used", 0))}')
                 _logger.info('FIN SYNCHRONISATION QUOTA')
                 _logger.info('='*50)
                 
@@ -987,15 +994,7 @@ class CopilotConfig(models.Model):
         """Ouvre le dashboard avec l'enregistrement de configuration existant"""
         config = self.get_config()
         
-        # Récupération de la version du module pour l'affichage dans le dashboard
-        module_version = config.get_module_version()
-        
-        # Mise à jour du champ module_version dans la configuration
-        config.write({
-            'module_version': module_version
-        })
-        
-        # Génération du HTML des modules installés
+        # Génération du HTML des modules installés sans utiliser module_version
         try:
             # Recherche des modules installés avec préfixe 'copilot_'
             Module = self.env['ir.module.module']
@@ -1038,7 +1037,7 @@ class CopilotConfig(models.Model):
                 installed_html += '</div>'
             else:
                 # Ajout d'un message par défaut avec Copilot Core
-                installed_html = '<div class="row"><div class="col-md-6 col-lg-4 mb-3"><div class="card h-100 border-info hover-shadow"><div class="card-body"><h6 class="card-title">Copilot Core</h6><p class="card-text small mb-1"><strong>Version:</strong> ' + module_version + '</p><p class="card-text small"><strong>Author:</strong> Copilot4Odoo</p><span class="badge badge-info">Installed</span></div></div></div></div>'
+                installed_html = '<div class="row"><div class="col-md-6 col-lg-4 mb-3"><div class="card h-100 border-info hover-shadow"><div class="card-body"><h6 class="card-title">Copilot Core</h6><p class="card-text small mb-1"><strong>Version:</strong> 18.0</p><p class="card-text small"><strong>Author:</strong> Copilot4Odoo</p><span class="badge badge-info">Installed</span></div></div></div></div>'
             
             # Mise à jour du champ HTML dans la configuration
             config.write({
@@ -1059,7 +1058,7 @@ class CopilotConfig(models.Model):
             'view_mode': 'form',
             'view_id': self.env.ref('copilot_core.view_copilot_dashboard').id,
             'target': 'current',
-            'context': {'module_version': module_version},
+            'context': {},
         }
     
     def send_telemetry(self):

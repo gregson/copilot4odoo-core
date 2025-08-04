@@ -5,3 +5,5 @@ access_copilot_usage_user,copilot.usage.user,model_copilot_usage,base.group_user
 access_copilot_usage_manager,copilot.usage.manager,model_copilot_usage,base.group_system,1,1,1,1
 access_copilot_models_user,copilot.models.user,model_copilot_models,base.group_user,1,0,0,0
 access_copilot_models_manager,copilot.models.manager,model_copilot_models,base.group_system,1,1,1,1
+access_copilot_purchase_user,copilot.purchase.user,model_copilot_purchase,base.group_user,1,0,0,0
+access_copilot_purchase_manager,copilot.purchase.manager,model_copilot_purchase,base.group_system,1,1,1,1
