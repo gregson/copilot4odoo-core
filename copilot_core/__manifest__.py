@@ -1,13 +1,13 @@
 {
     'name': 'Copilot AI Core',
-    'version': '18.0.1.1.3',
+    'version': '18.0.1.1.5',
     'category': 'Productivity',
     'summary': 'Central AI engine for Odoo copilots - AI tokens and models management',
     'description': """
 Copilot AI Core - Central Infrastructure
 =======================================
 
-COMPATIBLE WITH ODOO 18+ ONLY
+COMPATIBLE WITH ODOO 18+ ONLY V18.0.1.1.5
 
 This module is the mandatory central core for all specialized AI copilots.
 
@@ -36,7 +36,7 @@ Required installation to use any other copilot module.
     'currency': 'EUR',
     'live_test_url': 'https://www.copilot4odoo.com/demo',
     'repository': 'https://github.com/gregson/copilot_core.git',
-    'icon': 'static/description/icon.png',
+    'icon': '/copilot_core/static/description/icon.png',
     'depends': ['base', 'web'],
     'data': [
         'security/ir.model.access.csv',

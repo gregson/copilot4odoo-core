@@ -29,12 +29,9 @@ class CopilotConfig(models.Model):
     selected_model = fields.Selection([
         ('gpt-4-turbo', 'GPT-4 Turbo (OpenAI)'),
         ('gpt-3.5-turbo', 'GPT-3.5 Turbo (OpenAI)'),
-        ('claude-3-opus', 'Claude 3 Opus (Anthropic)'),
-        ('claude-3-sonnet', 'Claude 3 Sonnet (Anthropic)'),
-        ('mixtral-8x7b', 'Mixtral 8x7B (Mistral)'),
-        ('mistral-7b', 'Mistral 7B (Mistral)'),
-        ('command-r', 'Command R (Cohere)'),
-        ('nous-capybara', 'Nous Capybara (Open Source)'),
+        ('claude-4.1-opus', 'Claude 4.1 Opus (Anthropic)'),
+        ('claude-3.7-sonnet', 'Claude 3.7 Sonnet (Anthropic)'),
+        ('mixtral-8x22b', 'Mixtral 8x22B (Mistral)'),
     ], string=_('AI Model'), default='gpt-3.5-turbo', required=True)
     
     # Note: Language is now managed by Odoo's native language system
@@ -278,6 +275,47 @@ class CopilotConfig(models.Model):
             else:
                 record.usage_percentage = 0.0
     
+    def _parse_iso_datetime(self, date_string):
+        """
+        Parse une date au format ISO 8601 (ex: 2025-08-03T16:16:24.154Z) en datetime compatible Odoo
+        
+        :param date_string: Chaîne de date au format ISO 8601
+        :return: Objet datetime
+        """
+        if not date_string:
+            return fields.Datetime.now()
+            
+        try:
+            # Gérer les formats ISO 8601 avec différentes précisions
+            from datetime import datetime
+            import re
+            
+            # Supprimer le Z de fin (timezone UTC)
+            if date_string.endswith('Z'):
+                date_string = date_string[:-1]
+                
+            # Gérer les fractions de seconde
+            if '.' in date_string:
+                # Extraire la partie principale et la fraction
+                main_part, fraction = date_string.split('.')
+                # Garder seulement les 6 premiers chiffres de la fraction (microsecondes)
+                fraction = fraction[:6].ljust(6, '0')
+                date_string = f"{main_part}.{fraction}"
+            
+            # Remplacer T par un espace pour correspondre au format Odoo
+            date_string = date_string.replace('T', ' ')
+            
+            # Parser avec le format approprié
+            if '.' in date_string:
+                dt = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S.%f')
+            else:
+                dt = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+                
+            return dt
+        except Exception as e:
+            _logger.error(f"Erreur lors du parsing de la date ISO 8601 '{date_string}': {e}")
+            return fields.Datetime.now()
+    
     def test_connection(self):
         """Teste la connexion avec le token et récupère les informations du compte"""
         self.ensure_one()
@@ -343,8 +381,8 @@ class CopilotConfig(models.Model):
                                 'amount_eur': purchase.get('amount_eur', 0.0),
                                 'payment_reference': purchase.get('stripe_payment_intent_id', ''),
                                 'status': 'completed',
-                                'created_at': fields.Datetime.from_string(purchase.get('created_at')) if purchase.get('created_at') else fields.Datetime.now(),
-                                'completed_at': fields.Datetime.from_string(purchase.get('completed_at')) if purchase.get('completed_at') else fields.Datetime.now(),
+                                'created_at': self._parse_iso_datetime(purchase.get('created_at')) if purchase.get('created_at') else fields.Datetime.now(),
+                                'completed_at': self._parse_iso_datetime(purchase.get('completed_at')) if purchase.get('completed_at') else fields.Datetime.now(),
                                 'user_id': self.env.user.id,
                             })
                 
@@ -464,13 +502,14 @@ class CopilotConfig(models.Model):
             _logger.error(f'Erreur de synchronisation du quota: {e}')
             raise UserError(_('Impossible de se connecter au service IA. Vérifiez votre connexion internet.'))
     
-    def ask_ai(self, prompt, context=None, module_name=None):
+    def ask_ai(self, prompt, context=None, module_name=None, lang=None):
         """
         Méthode principale pour interroger l'IA
         
         :param prompt: Question/instruction pour l'IA
         :param context: Contexte métier (dict avec données Odoo)
         :param module_name: Nom du module appelant (crm, hr, stock, etc.)
+        :param lang: Code de langue (optionnel, par défaut utilise la langue de l'utilisateur)
         :return: Réponse de l'IA
         """
         self.ensure_one()
@@ -487,16 +526,39 @@ class CopilotConfig(models.Model):
                 'Content-Type': 'application/json'
             }
             
+            # Récupérer la langue de l'utilisateur si non spécifiée
+            user_lang = lang or self.env.context.get('lang', 'en_US')
+            
+            # Adapter le prompt pour inclure l'instruction de langue
+            language_name = 'English'  # Par défaut
+            if user_lang.startswith('fr'):
+                language_name = 'French'
+            elif user_lang.startswith('es'):
+                language_name = 'Spanish'
+            elif user_lang.startswith('de'):
+                language_name = 'German'
+            elif user_lang.startswith('it'):
+                language_name = 'Italian'
+            elif user_lang.startswith('nl'):
+                language_name = 'Dutch'
+            elif user_lang.startswith('pt'):
+                language_name = 'Portuguese'
+            
+            # Ajouter l'instruction de langue au début du prompt
+            language_instruction = f"Please respond in {language_name}. "
+            enhanced_prompt = language_instruction + prompt
+            
             payload = {
                 'token': self.user_token,  # Ajout du token dans le payload
                 'model': self.selected_model,
                 'messages': [{
                     'role': 'user',
-                    'content': prompt
+                    'content': enhanced_prompt
                 }],
                 'context': context or {},
                 'module_name': module_name,  # Utiliser module_name pour cohérence avec le backend
                 'odoo_version': release.version,
+                'language': user_lang  # Ajouter la langue dans le payload
             }
             
             # Enregistrer le temps de début pour calculer le temps de réponse

@@ -36,8 +36,8 @@
         
         <!-- Modèles Anthropic -->
         <record id="model_claude_3_opus" model="copilot.models">
-            <field name="name">claude-3-opus</field>
-            <field name="display_name">Claude 3 Opus</field>
+            <field name="name">claude-4.1-opus</field>
+            <field name="display_name">Claude 4.1 Opus</field>
             <field name="provider">anthropic</field>
             <field name="description">Modèle le plus puissant d'Anthropic, excellent pour l'analyse et le raisonnement</field>
             <field name="context_length">200000</field>
@@ -51,8 +51,8 @@
         </record>
         
         <record id="model_claude_3_sonnet" model="copilot.models">
-            <field name="name">claude-3-sonnet</field>
-            <field name="display_name">Claude 3 Sonnet</field>
+            <field name="name">claude-3.7-sonnet</field>
+            <field name="display_name">Claude 3.7 Sonnet</field>
             <field name="provider">anthropic</field>
             <field name="description">Équilibre parfait entre performance et coût</field>
             <field name="context_length">200000</field>

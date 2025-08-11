@@ -250,6 +250,8 @@ CopilotWidget.template = "copilot_core.CopilotWidget";
 registry.category("systray").add("CopilotWidget", {
     Component: CopilotWidget,
     isDisplayed: () => true,
+    // Définir une séquence pour positionner l'icône près de Discuss
+    sequence: 15,
 });
 
 // Version affichée dynamiquement dans logModuleVersion()
