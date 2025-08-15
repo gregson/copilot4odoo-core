@@ -57,8 +57,6 @@ Required installation to use any other copilot module.
     'auto_install': False,
     'application': True,
     'sequence': 1,
-    'price': 10.0,
-    'currency': 'EUR',
     'images': [
         'static/description/banner.gif',
         'static/description/copilot_core.jpg',
