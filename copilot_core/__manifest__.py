@@ -28,7 +28,7 @@ It serves as infrastructure for specialized modules:
 
 Required installation to use any other copilot module.
     """,
-    'author': 'Copilot4Odoo',
+    'author': 'Copilot4Odoo Team',
     'website': 'https://www.copilot4odoo.com',
     'license': 'LGPL-3',
     'support': 'support@copilot4odoo.com',
