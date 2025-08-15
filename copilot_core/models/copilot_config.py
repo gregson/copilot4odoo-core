@@ -1019,14 +1019,18 @@ class CopilotConfig(models.Model):
                 }
             }
         
+    @api.model
     def get_module_version(self):
         """Récupère la version du module copilot_core"""
         try:
             module = self.env['ir.module.module'].search([('name', '=', 'copilot_core')], limit=1)
             if module:
-                return module.installed_version
+                ver = module.installed_version
+                _logger.info("Copilot Core module version: %s", ver)
+                return ver
             else:
                 # Fallback sur la version du manifest
+                _logger.info("Copilot Core module version not found in registry, using fallback 18.0.1.0.4")
                 return "18.0.1.0.4"
         except Exception as e:
             _logger.error(f"Erreur lors de la récupération de la version du module: {e}")

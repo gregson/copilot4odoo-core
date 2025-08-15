@@ -1,13 +1,13 @@
 {
     'name': 'Copilot AI Core',
-    'version': '18.0.1.1.5',
+    'version': '18.0.1.1.6',
     'category': 'Productivity',
     'summary': 'Central AI engine for Odoo copilots - AI tokens and models management',
     'description': """
 Copilot AI Core - Central Infrastructure
 =======================================
 
-COMPATIBLE WITH ODOO 18+ ONLY V18.0.1.1.5
+COMPATIBLE WITH ODOO 18+ ONLY V18.0.1.1.6
 
 This module is the mandatory central core for all specialized AI copilots.
 
