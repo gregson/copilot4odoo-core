@@ -1,69 +1,47 @@
+# -*- coding: utf-8 -*-
 {
-    'name': 'Copilot AI Core',
-    'version': '18.0.1.1.5',
-    'category': 'Productivity',
-    'summary': 'Central AI engine for Odoo copilots - AI tokens and models management',
-    'description': """
-Copilot AI Core - Central Infrastructure
-=======================================
+    'name': 'Copilot HR',
+    'version': '18.0.1.0.49',
+    'category': 'Human Resources/Productivity',
+    'summary': 'Module HR pour Copilot4Odoo',
+    'description': '''
+Copilot HR - Version v18.0.1.0.49
+============================================
 
-COMPATIBLE WITH ODOO 18+ ONLY V18.0.1.1.5
-
-This module is the mandatory central core for all specialized AI copilots.
-
-Main features:
-* Centralized management of AI tokens and quotas
-* Choice of AI models (GPT-4, Claude, Mixtral, etc.)
-* Secure configuration interface
-* Discovery hub for available copilot modules
-* Tracking and history of AI requests
-* Multi-engine support (OpenRouter, OpenAI, Ollama)
-
-This module does not contain direct business AI functions.
-It serves as infrastructure for specialized modules:
-- Copilot CRM (sales, leads, quotes)
-- Copilot HR (employees, leaves, contracts)
-- Copilot Stock (inventory, supply)
-- Copilot Accounting (invoices, balance sheet)
-
-Required installation to use any other copilot module.
-    """,
+Module HR v18.0.1.0.49 pour Copilot4Odoo compatible avec Odoo 18.
+Améliorations: contexte société et KPIs injectés dans le rapport IA, et détection module côté API via module_name='copilot_hr'.
+    ''',
     'author': 'Copilot4Odoo Team',
-    'website': 'https://www.copilot4odoo.com',
-    'license': 'LGPL-3',
-    'support': 'support@copilot4odoo.com',
-    'price': 0.0,
-    'currency': 'EUR',
-    'live_test_url': 'https://www.copilot4odoo.com/demo',
-    'repository': 'https://github.com/gregson/copilot_core.git',
-    'icon': '/copilot_core/static/description/icon.png',
-    'depends': ['base', 'web'],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/copilot_config_views.xml',
-        'views/copilot_dashboard_views.xml',
-        'views/copilot_menu.xml',
-        'data/copilot_models_data.xml',
+    'website': 'https://www.copilot4odoo.com/modules',
+    'license': 'OPL-1',
+    'icon': '/copilot_hr/static/description/icon.png',  # Icône locale pour le chatter
+    'depends': [
+        'base',
+        'hr',
+        'copilot_core',
+        'hr_recruitment',
+        'hr_contract',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'copilot_core/static/src/js/copilot_widget.js',
-            'copilot_core/static/src/css/copilot_style.css',
-            'copilot_core/static/src/css/copilot_widget.css',
-            'copilot_core/static/src/xml/copilot_widget.xml',
-        ],
-    },
+    'suggests': [],
+    'data': [
+        'security/hr_ai_security.xml',
+        'security/ir.model.access.csv',
+        'data/copilot_data.xml',
+        'data/ir_cron.xml',
+        'views/hr_employee_views.xml',
+        'views/hr_applicant_views.xml',
+        'views/hr_contract_views.xml',
+        'views/hr_report_views.xml',
+    ],
     'installable': True,
     'auto_install': False,
-    'application': True,
-    'sequence': 1,
+    'application': False,
+    'price': 399.0,
+    'currency': 'EUR',
     'images': [
         'static/description/banner.gif',
-        'static/description/copilot_core.jpg',
-        # Emplacements pour les futures images de screenshots
-         'static/description/screenshot_1.png',
-        'static/description/screenshot_2.png',
-        'static/description/screenshot_3.png',
+        'static/description/copilot_hr.jpg',
+ 
     ],
+    'post_init_hook': 'post_init_hook',
 }
-
