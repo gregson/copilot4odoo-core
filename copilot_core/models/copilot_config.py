@@ -197,6 +197,12 @@ class CopilotConfig(models.Model):
                 _logger.info('FIN APPEL API /api/account/info (sync_quota)')
                 _logger.info('='*50)
                 
+                # Envoi de la télémétrie après une synchro réussie (non bloquant)
+                try:
+                    self.send_telemetry()
+                except Exception as telemetry_error:
+                    _logger.warning(f'Erreur télémétrie (non bloquante) après sync_quota: {telemetry_error}')
+                
                 return token_balance
             else:
                 self.status = 'invalid_token'
@@ -483,6 +489,12 @@ class CopilotConfig(models.Model):
                 _logger.info(f'- Tokens restants: {int(data.get("tokens_total", 0)) - int(data.get("tokens_used", 0))}')
                 _logger.info('FIN SYNCHRONISATION QUOTA')
                 _logger.info('='*50)
+                
+                # Envoi de la télémétrie après une synchro réussie (non bloquant)
+                try:
+                    self.send_telemetry()
+                except Exception as telemetry_error:
+                    _logger.warning(f'Erreur télémétrie (non bloquante) après sync_quota: {telemetry_error}')
                 
                 return {
                     'type': 'ir.actions.client',
